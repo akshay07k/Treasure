@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            font-size: 50px;
+            color: #ffaa00;
+            height: 500px;
+        }
+
+        button {
+            margin: 30px 50px;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            height: 70px;
+            width: 70px;
+            border-radius: 50%;
+        }
+
+        #startStopButton {
+            background-color: #40A798;
+            color: white;
+        }
+
+        #startStopButton.stop {
+            background-color: #fd4242;
+        }
+
+        #lapResetButton {
+            background-color: #226B80;
+            color: white;
+        }
+
+        ul {
+            list-style-type: none;
+            max-height: 200px;
+            max-width: 300px;
+            overflow: scroll;
+        }
+
+        .sajawat{
+            border-bottom: 1px solid rgb(168, 167, 167);
+        } 
+
+        li{
+            font-size: 25px;
+            padding: 5px;
+            color: rgb(168, 167, 167);
+        }
+        ::-webkit-scrollbar{
+            width: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label id="timeLabel">00:00:00</label> <br><br>
+        <button id="lapResetButton" onclick="lapReset()">Lap</button>
+        <button id="startStopButton" onclick="startStop()">Start</button>
+        <ul id="lapsList"></ul>
+    </div>
+    
+    <script>
+        let isRunning = false;
+        let timer;
+        let lapCounter = 1;
+        let sec=1,min=0,hour=0; 
+        let s=1, m=0, h=0;
+
+        function updateTime(){
+            let timeLabel = document.querySelector('#timeLabel');
+            timeLabel.innerHTML = `${hour > 9 ? hour : '0' + hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec++ : '0' + sec++}`;
+            if(sec>59) { min++; sec=0;}
+            if(min>59) { hour++, min=0;}
+        }
+
+        function startStop() {
+            const startStopButton = document.getElementById("startStopButton");
+            const lapResetButton = document.getElementById("lapResetButton");
+        
+            if (!isRunning) {
+                // Start the stopwatch
+                isRunning = true;
+                startStopButton.innerHTML = "Stop";
+                startStopButton.setAttribute("class", "stop"); // for color change
+                lapResetButton.innerHTML = "Lap";
+                timer = setInterval(updateTime, 1000);
+            } else {
+                // Stop the stopwatch
+                isRunning = false;
+                startStopButton.innerHTML = "Start";
+                startStopButton.removeAttribute("class");
+                lapResetButton.innerHTML = "Reset";
+                clearInterval(timer);
+            }
+        }
+
+        function lapReset() {
+            if (isRunning) {
+                // Record lap time
+                const lapItem = document.createElement("li");
+                let s1 = sec - s;
+                let m1 = min - m;
+                let h1 = hour - h;
+                if(s1<0){s1+=60; m1--;}
+                if(m1<0){m1+=60; h1--;}
+                const lapTime = `${h1 > 9 ? h1 : '0' + h1}:${m1 > 9 ? m1 : '0' + m1}:${s1 > 9 ? s1 : '0' + s1}`;
+                lapItem.innerHTML = `Lap ${lapCounter++} &nbsp; &nbsp; &nbsp; &nbsp; ${lapTime}`;
+                lapItem.classList.toggle("sajawat");
+                // document.querySelector('#lapsList').append(lapItem);
+                document.querySelector('#lapsList').insertBefore(lapItem, lapsList.firstChild);
+                // idhar thoda dhyan de
+                s=sec;
+                m=min;
+                h=hour;
+            } else {
+                // Reset the stopwatch
+                resetStopwatch();
+            }
+        }
+
+        function resetStopwatch(){
+            let timeLabel = document.querySelector('#timeLabel');
+            timeLabel.innerHTML = "00:00:00";
+            isRunning = false;
+            lapCounter = 1;
+            sec=1; min=hour=0;
+            s=1; m=h=0;
+            document.querySelector('#lapsList').innerHTML="";
+        }
+    </script>
+</body>
+</html>
