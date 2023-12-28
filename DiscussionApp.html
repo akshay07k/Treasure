@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion App</title>
+</head>
+<style>
+    #top{
+        background-color: #008571;
+        color: #fff;
+        padding: 15px;
+        margin: 0;
+    }
+    #parent{
+        display: flex;
+    }
+    #left{
+        flex: 1.5;
+        height: 90vh;
+        background-color: rgba(236, 236, 236, 0.927);
+        border-right: 1px solid rgb(207, 207, 207);
+    }
+    #left-top{
+        background-color: rgba(253, 253, 253, 0.927);
+        border-bottom: 1px solid rgb(207, 207, 207);
+    }
+    #newFormButton{
+        padding: 7px;
+        margin: 15px 20px;
+        background-color: #0180ff;
+        color: white;
+        border: none;
+    }
+    #searchButton{
+        padding: 5px;
+        margin: 15px 20px;
+    }
+  
+    #right{
+        flex: 2;
+        height: 90vh;
+        width: 100%;
+    }
+    #byDefault{
+        margin: 30px 50px;
+        padding: 10px 30px;
+    }
+    #afterClick{
+        margin: 0 50px;
+        padding: 0 30px;
+    }
+    #afterClick > div{
+        background-color: rgba(245, 245, 245, 0.927);
+    }
+
+
+    input[type=button]{
+        float: right;
+        background-color: #0180ff;
+        color: white;
+        border: none;
+        margin-top: 5px;
+        padding: 8px;
+    }
+    #addHere{
+        margin: 0;
+        padding: 0;
+    }
+    li, .resDiv{
+        display: flex;
+        justify-content: space-between;
+        list-style: none;
+        border-bottom: 1px solid rgb(207, 207, 207);
+    }
+    .firstDiv{
+        width: 100%;
+    }
+    .secondDiv{
+        display: flex;
+        align-items: center;
+    }
+    .secondDiv button{
+        padding: 15px;
+        height: 100%;
+        border: none;
+        cursor: pointer;
+        background: transparent;
+    }
+    .secondDiv p{
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    #subject{
+        padding: 5px;
+        font-size: 17px;
+    }
+    #name{
+        padding: 4px;
+        font-size: 15px;
+    }
+    
+    .hdo, .hteen{
+        margin: 0;
+        padding: 5px;
+    }
+    .putin{
+        margin: 0;
+        padding: 5px;
+    }
+
+    textarea{
+        width: 100%;
+    }
+
+    #responses{
+        max-height: 190px;
+        overflow: scroll;
+        display: flex;
+        flex-direction: column;
+        background-color: rgba(245, 245, 245, 0.927);
+    }
+    
+</style>
+<body>
+
+    <h1 id="top">Discussion Portal</h1>
+
+    <div id="parent">
+
+        <div id="left">
+            <div id="left-top">
+                <button id="newFormButton">New Question Form</button>
+                <input type="text" id="searchButton" placeholder="search questions...">
+            </div>
+            <ul id="addHere">
+                
+            </ul>
+        </div>
+
+        <div id="right">
+            <div id="byDefault">
+                <h1>Welcome to Discussion Portal !</h1>
+                <p>Enter a subject and question to get started</p>
+                <input id="subject" type="text" placeholder="Subject"><br><br>
+                <textarea id="question" placeholder="Question" rows="12"></textarea><br>
+                <input id="sbtn" type="button" value="Submit">
+            </div>
+        </div>
+
+    </div>
+
+    <script src="DiscussionApp.js"></script>
+</body>
+</html>
