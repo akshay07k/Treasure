@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromoDoro</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color:#d4d4dc ;
+        }
+        .container{
+            width: 60%;
+            max-width: 450px;
+            min-height: 60%;
+            max-height: 85%;
+            margin: 0 auto;
+            background-color: #525252;
+            border-radius: 7px;
+            box-shadow: 10px 10px 20px rgba(1, 1, 1, 0.5);
+        }
+        #upper{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-height: 150px;
+            min-height: 100px;
+            margin: 35px;
+            padding: 15px;
+            font-size: 8vw;
+            color: #333;
+            border: 7px solid #00ccff;
+            background-color:  #f6f5f3;
+        }
+        #bottom{
+            font-size: 20px;
+            text-align: center;
+            margin: 35px;
+        }
+        p{
+            color: #fff;
+            font-size: 2.5vw;
+        }
+        span{
+            font-size: 2vw;
+            color: #fff;
+        }
+        button{
+            border: transparent;
+            border-radius: 2px;
+            background-color: #000000;
+            color: #fff;
+            width: 4vw;
+            height: 2vw;
+            min-height: 18px;
+            margin: 0.5vw;
+            cursor: pointer;
+        }
+        #start, #reset{
+            width: 8vw;
+            height: 4vw;
+            min-width: 60px;
+            min-height: 40px;
+            margin: 2vw;
+        }
+        hr{
+            border: 1px dotted ghostwhite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div id="upper">20:00</div>
+
+        <div id="bottom">
+
+            <p>Session 0</p> <hr>
+
+            <div style="display: flex;">
+                <div style="width: 50%;">
+                    <span>session time<br> <span id="session-length" style="font-size: 3vw; color: #40A798;">20 min</span> </span><br>
+                    <button onclick="Sdec()">-</button>
+                    <button onclick="Sinc()">+</button>
+                </div>
+                <div style="width: 50%;">
+                    <span>break time<br> <span id="break-length" style="font-size: 3vw; color: #fd4242;">5 min</span> </span><br>
+                    <button onclick="Bdec()">-</button>
+                    <button onclick="Binc()">+</button> 
+                </div>
+            </div><hr>
+
+            <button id="start">Start</button>
+            <button id="reset">Reset</button>
+
+        </div> 
+    </div>
+
+    <script>
+        let isRunning = false, isStChange = false, isBtChange = false;
+        let st=20, bt=5;
+        let Smin=st, Ssec=0, Bmin=bt, Bsec=0;
+        let s = 1, timer;
+
+        const p  = document.querySelector('p');
+        const display = document.querySelector('#upper');
+        const sessionLength = document.querySelector("#session-length");
+        const breakLength = document.querySelector("#break-length");
+        const startPause = document.querySelector('#start');
+        
+        function Sdec(){
+            if(!isRunning){
+                isStChange = true;
+                if(st>0){st--};
+                sessionLength.innerHTML = `${st} min`;
+                if(window.getComputedStyle(display).borderColor == "rgb(0, 204, 255)"){
+                    display.innerHTML = `${st > 9 ? st : '0' + st}:00`;
+                }
+                Smin = st;
+            }
+        }
+        function Sinc(){
+            if(!isRunning){
+                isStChange = true;
+                st++;
+                sessionLength.innerHTML = `${st} min`;
+                if(window.getComputedStyle(display).borderColor == "rgb(0, 204, 255)"){
+                    display.innerHTML = `${st > 9 ? st : '0' + st}:00`;
+                }
+                Smin = st;
+            }
+        }
+        function Bdec(){
+            if(!isRunning){
+                isBtChange = true;
+                if(bt>0){bt--};
+                breakLength.innerHTML = `${bt} min`;
+                if(window.getComputedStyle(display).borderColor == "rgb(255, 99, 99)"){
+                    display.innerHTML = `${bt > 9 ? bt : '0' + bt}:00`;
+                }
+                Bmin = bt;
+            }
+        }
+        function Binc(){
+            if(!isRunning){
+                isBtChange = true;
+                bt++;
+                breakLength.innerHTML = `${bt} min`;
+                if(window.getComputedStyle(display).borderColor == "rgb(255, 99, 99)"){
+                    display.innerHTML = `${bt > 9 ? bt : '0' + bt}:00`;
+                }
+                Bmin = bt;
+            }
+        }
+
+        function sessionTime(){
+            p.innerHTML = `Session ${s}`;
+            if(Smin<0) {
+                display.style.borderColor = "rgb(255, 99, 99)";
+                breakTime();
+            }
+            else{
+                display.style.borderColor = "rgb(0, 204, 255)";
+                display.innerHTML = `${Smin > 9 ? Smin : '0' + Smin}:${Ssec > 9 ? Ssec : '0' + Ssec}`;
+                if(Ssec<=0){Smin--; Ssec=60;}
+                Ssec--;
+                if(Smin<0 && Bmin<0){Bmin = bt-1;}
+            }
+        }
+
+        function breakTime(){
+            p.innerHTML = `Break!`;
+            if(Bmin<0) { sessionTime(); }
+            else{
+                display.innerHTML = `${Bmin > 9 ? Bmin : '0' + Bmin}:${Bsec > 9 ? Bsec : '0' + Bsec}`;
+                if(Bsec<=0){Bmin--; Bsec=60;}
+                Bsec--;
+                if(Bmin<0){Smin = st-1;s++;}
+            }
+        }
+
+        document.querySelector('#start').addEventListener('click',
+        function(){
+            if(!isRunning){
+                isRunning = true;
+                startPause.innerHTML = "Pause";
+                if(isStChange){
+                    isStChange = false;
+                    Smin = st; Ssec=0;
+                }
+                if(isBtChange){
+                    isBtChange = false;
+                    Bmin = bt; Bsec=0;
+                }
+                timer = setInterval(sessionTime, 500);
+            }
+            else{
+                isRunning = false;
+                startPause.innerHTML = "Start";
+                clearInterval(timer);
+            }
+        });
+
+        document.querySelector('#reset').addEventListener('click',
+        function(){
+            isRunning = false, isStChange = false, isBtChange = false;
+            clearInterval(timer);
+            st=20; bt=5;
+            Smin=st; Bmin=bt;
+            Ssec=Bsec=0;
+            s=1;
+            display.innerHTML = `20:00`;
+            p.innerHTML = `Session 0`;
+            sessionLength.innerHTML = `20 min`;
+            breakLength.innerHTML = `5 min`;
+            startPause.innerHTML = `Start`;
+        });
+
+    </script>
+
+</body>
+</html>
