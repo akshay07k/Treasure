@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDoApp</title>
+    <style>
+        .parent{
+            display: flex;
+            width: 100%;
+            height: 330px;
+        }
+        #left{
+            flex: 1.5;
+            background-color: rgba(236, 236, 236, 0.927);
+            box-shadow: 5px 5px 10px #888888;
+            min-width: 200px;
+            margin-left: 10px;
+        }
+        #right{
+            flex: 2;
+            margin-left: 21px;
+        }
+
+        #addHere{
+            list-style-type: none;
+            padding: 0 10px;
+            overflow: scroll;
+            max-height: 50%;
+            max-width: 95%;
+        }
+
+        #textarea{
+            border: none;
+            outline: none;
+            font-family: sans-serif;
+            font-size: 45px;
+            font-weight: 700;
+        } 
+
+        li{
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgb(168, 167, 167); 
+        }
+        .taskInput{
+            font-size: 23px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            padding: 10px;
+            width: 80%;
+        }
+        .line{
+            text-decoration: line-through;
+        }
+        .crosscheck{
+            display: flex; 
+            justify-content: space-between;
+            width: 4vw; 
+            padding-right: 10px;
+        }
+        .cross{
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: red;
+        }
+        .pencil{
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+        .check{
+            cursor: pointer;
+        }
+        ::-webkit-scrollbar{
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="parent">
+
+    <div id="left">
+        <h1>TASK LIST</h1> 
+        <p>
+            Add tasks to your list by typing to their
+            right and pressing enter. You may then 
+            view pending tasks below.
+        </p>
+        <ul id="addHere">
+            
+        </ul>
+    </div>
+
+    <div id="right">
+        <textarea name="text" id="textarea" cols="25" rows="5"  placeholder="I need to..."></textarea>
+    </div>
+
+    </div>
+<script>
+    let textarea = document.querySelector('#textarea');
+    let addHere = document.querySelector('#addHere');
+    let arr = [];
+
+    textarea.addEventListener('keydown', function(e){
+        if(e.key == 'Enter' && textarea.value){
+            e.preventDefault();
+
+            let obj = {};
+            obj.value = textarea.value;
+            textarea.value = "";
+
+            if(localStorage.getItem('toDoList')){
+                arr = JSON.parse(localStorage.getItem('toDoList'));
+            }
+
+            arr.push(obj);
+            localStorage.setItem('toDoList',JSON.stringify(arr));
+
+            appendToLeft(obj);
+
+        }
+        else if(e.key == 'Enter' && textarea.value==""){
+            alert('Please Enter Task !');
+            e.preventDefault();
+        }
+    });
+
+    function appendToLeft(obj){
+        const li = document.createElement('li');
+
+        const input  = document.createElement('input');
+        input.className = "taskInput";
+        input.type = "text";
+        input.value = obj.value;
+        input.disabled = true;
+        
+        const div = document.createElement('div');
+        div.className = "crosscheck";
+
+        const check = document.createElement('input');
+        check.className = "check";
+        check.type = "checkbox";
+
+        const pencil = document.createElement('button');
+        pencil.className = "pencil";
+        pencil.innerText = "✏️";
+
+        const cross = document.createElement('button');
+        cross.className = "cross";
+        cross.innerText = `X`;
+
+        div.append(check, pencil, cross);
+        li.append(input, div);
+
+        addHere.append(li);
+    }
+
+    window.addEventListener('load', function(){
+        let arrobj = JSON.parse(localStorage.getItem('toDoList'));
+        if(arrobj){
+            arrobj.forEach((obj) => {
+                appendToLeft(obj);
+            });
+        }
+    })
+
+    addHere.addEventListener('click', function(e){
+        const li = e.target.parentElement.parentElement;
+        if(e.target.className === "check"){
+            li.querySelector('input').classList.toggle('line');
+        }
+        else if(e.target.className === "cross"){
+            const input = li.querySelector('input');
+            let arr = JSON.parse(localStorage.getItem('toDoList'));
+            const i = arr.findIndex((e) => e.value === input.value)
+            arr.splice(i, 1);
+            localStorage.setItem('toDoList', JSON.stringify(arr));
+
+            li.remove();
+        }
+        else if(e.target.className === "pencil"){
+            const taskInput = li.querySelector('input');
+            const updatedTaskName = prompt("Update task:", taskInput.value);
+
+            if (updatedTaskName !== null && updatedTaskName!=="") {
+                // update at local storage
+                let arr = JSON.parse(localStorage.getItem('toDoList'));
+                const i = arr.findIndex(e => e.value === taskInput.value);
+                arr[i].value = updatedTaskName;
+                localStorage.setItem('toDoList', JSON.stringify(arr));
+                // update at task list
+                taskInput.value = updatedTaskName;
+            }
+            else if (updatedTaskName==""){
+                alert('Please Enter Task !');
+            }
+        }
+    });
+</script>
+</body>
+</html>
